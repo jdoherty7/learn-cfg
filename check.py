@@ -60,22 +60,24 @@ def generate_random_grammar():
     G = (set(sigma), set(N), P, set(S))
     return G
 
-def generate_handmade_grammar():
-    G0 = (set(["a", "b"]),
-          set(["NT0", "NT1"]),
-          {"NT0": [[("a",), ("NT0",)], 
-                   [("NT1",)]],
-           "NT1": [[("b",)]]},
-          set(["NT0"])
-        )
-    G1 = (set(["a", "b", "c"]),
-          set(["NT0", "NT1"]),
-          {"NT0": [[("a",), ("NT0",)], 
+def generate_handmade_grammar(n):
+    if n == 0:
+        G = (set(["a", "b"]),
+             set(["NT0", "NT1"]),
+             {"NT0": [[("a",), ("NT0",)], 
+                      [("NT1",)]],
+              "NT1": [[("b",)]]},
+             set(["NT0"])
+           )
+    else:
+        G = (set(["a", "b", "c"]),
+             set(["NT0", "NT1"]),
+            {"NT0": [[("a",), ("NT0",)], 
                    [("c",), ("NT1",)]],
-           "NT1": [[("b",), ("c",)]]},
-          set(["NT0"])
-        )
-    return G1
+             "NT1": [[("b",), ("c",)]]},
+             set(["NT0"])
+            )
+    return G
 
 def generate_python():
     T = [   

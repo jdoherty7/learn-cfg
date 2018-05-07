@@ -1,11 +1,3 @@
-"""
-Logic
-Odesza
-Kygo
-Kesha/Macklemore
-Lindsey Stirling / Evanescence
-Imagine Dragons
-"""
 
 # Main functions
 import numpy as np
@@ -121,11 +113,6 @@ def LearnCFG(T):
 def ExtendGrammar(G, T):
     # get substrings that are likely constituents
     SG = construct_substitution_graph(G, T)
-    #print()
-    #print("Nodes")
-    #print(SG.nodes())
-    #print()
-    #SG = prune(SG, G, T)
     Gp = np.copy(G)
     # component means connected components
     sigma, NTs, P, S = Gp
@@ -152,9 +139,8 @@ def ExtendGrammar(G, T):
             NTs = NTs.union(set([NT]))
             Gp = (sigma, NTs, P, S)
 
-    # what is S? Never says.. uses it as an element of R a lot htough.
-    # I think S is just all the data?
-    l, f = 4, 2#len(T)//3
+
+    l, f = 4, 2
     freq = get_freq(T)
     #print(freq)
     for example in T:
@@ -246,9 +232,50 @@ def reduce(tokens, P):
     return reductions
 
 
-# current problem is that my graph keeps being just one component. not multiple.
-# this is likely due to the fact that
-def main():
+
+
+
+def handmade_test(n=0):
+    num_examples = 30
+    print("Generate Training and Testing Sets")
+    T_train = None
+    while T_train is None:
+        try:
+            Gt = generate_handmade_grammar(n)
+            T_train = generate_positive_examples(Gt, num_examples)
+        except:
+            pass
+
+    G = LearnCFG(T_train)
+    print()
+    print("Grammar Learned")
+    print( G)
+
+
+def english_test():
+    T_train = [" This ", " That ", "I am a man", "I am a woman"]
+    T_train = [list(map(lambda x: (x,), example)) for example in T_train]
+    G = LearnCFG(T_train)
+    print("Grammar Learned")
+    print( G )
+
+
+def python_test():
+    T_train = generate_python()
+    G = LearnCFG(T_train)
+    print("Grammar Learned")
+    print( G )
+
+
+def haskell_test():
+    T_train = generate_haskell()
+    G = LearnCFG(T_train)
+    print("Grammar Learned")
+    print( G )
+
+
+# Quantitative Test that could not be performed
+def random_test():
     generated_grammars = []
     num_examples = 150
     print(.2*num_examples)
@@ -256,14 +283,11 @@ def main():
     print("Generate Training and Testing Sets")
     for i in range(15):
         try:
-            #Gt = generate_random_grammar()
-            Gt = generate_handmade_grammar()
+            Gt = generate_random_grammar()
             T = generate_positive_examples(Gt, num_examples)
 
             T_train = T[:int(.2*num_examples) ]
             T_test  = T[ int(.2*num_examples):]
-            #T_train = generate_python()
-            T_train = generate_haskell()
             
             #print("Train", T_train)
             generated_grammars.append((Gt, T_train, T_test))
@@ -286,24 +310,23 @@ def main():
     for i in range(len(generated_grammars)):
         print("Grammars Trained: ", i+1, "/", len(generated_grammars))
         Gt, T_train, T_test = generated_grammars[i]
-        #Gl = LearnCFG(T_train)
-        #try:
-        Gl = LearnCFG(T_train)
-        print()
-        print("Grammar Learned")
-        print( Gl)
-        Gs.append(Gl)
+        try:
+            Gl = LearnCFG(T_train)
+            print()
+            print("Grammar Learned")
+            print( Gl)
+            Gs.append(Gl)
 
-        e1 = get_correct(Gl, T_train)
-        e2 = get_correct(Gl, T_test)
-        print("Train Error: ", e1)
-        print("Test Error: ", e2)
+            e1 = get_correct(Gl, T_train)
+            e2 = get_correct(Gl, T_test)
+            print("Train Error: ", e1)
+            print("Test Error: ", e2)
 
-        train_errors.append(e1)
-        test_errors.append(e2)
-        #except Exception as e:
-        #    print(e)
-        #    print("Error in Learning")
+            train_errors.append(e1)
+            test_errors.append(e2)
+        except Exception as e:
+            print(e)
+            print("Error in Learning")
     print()
     print()
     print("Errors")
@@ -317,6 +340,11 @@ def main():
     print("Testing Grammar Accuracy:  ", test_ga)
     print("Testing Example Accuracy:  ", test_ea)
 
-if __name__ == "__main__":
-    main()
 
+
+if __name__ == "__main__":
+    handmade_test()
+    english_test()
+    #python_test()
+    #haskell_test()
+    #random_test()
