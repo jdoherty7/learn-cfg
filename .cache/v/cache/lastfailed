@@ -1,5 +1,0 @@
-{
-  "test.py::test_freq": true,
-  "test.py::test_get_all_substrings": true,
-  "test.py::test_single_NT": true
-}
